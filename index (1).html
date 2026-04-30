@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prácticas Java — Enrique Soriano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.15);
+    --text: #f0eff8;
+    --muted: #7a7990;
+    --accent: #c4b5fd;
+    --accent-dark: #8b7ff5;
+    --accent2: #5de8b5;
+    --tag-java: #c4b5fd;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(196,181,253,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(196,181,253,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(80px); pointer-events: none; z-index: 0; opacity: 0.15;
+  }
+  .orb-1 { width: 450px; height: 450px; background: #8b7ff5; top: -100px; right: -100px; }
+  .orb-2 { width: 300px; height: 300px; background: #c4b5fd; bottom: 50px; left: -100px; }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 760px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 0 0; margin-bottom: 64px;
+  }
+  .nav-logo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
+  .nav-logo span { color: var(--accent); }
+  .nav-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--text); }
+
+  /* HERO */
+  .hero { margin-bottom: 72px; animation: slideUp 0.7s ease both; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent);
+    margin-bottom: 20px; padding: 5px 12px;
+    border: 1px solid rgba(196,181,253,0.2); border-radius: 99px;
+    background: rgba(196,181,253,0.05);
+  }
+  .hero-tag::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-size: clamp(38px, 7vw, 62px); font-weight: 800;
+    line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  .hero-desc {
+    font-size: 15px; color: var(--muted); line-height: 1.7;
+    max-width: 540px; margin-bottom: 32px; font-weight: 400;
+  }
+
+  .hero-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 7px 14px; border-radius: 10px;
+    border: 1px solid rgba(196,181,253,0.2); background: var(--surface);
+    font-size: 12px; font-weight: 600; color: var(--tag-java);
+  }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; background: var(--accent-dark); color: #fff;
+    border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: #7a6ee0; transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; background: transparent; color: var(--text);
+    border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600;
+    border: 1px solid var(--border-hover); transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: var(--surface2); }
+
+  /* SECTIONS */
+  .section { margin-bottom: 64px; }
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.12em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 700;
+    letter-spacing: -0.02em; margin-bottom: 24px;
+  }
+
+  /* FEATURED */
+  .featured-card {
+    background: var(--surface);
+    border: 1px solid rgba(196,181,253,0.25);
+    border-radius: 16px; padding: 28px;
+    position: relative; overflow: hidden;
+  }
+  .featured-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .featured-label {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+    background: rgba(196,181,253,0.1); border: 1px solid rgba(196,181,253,0.2);
+    border-radius: 99px; padding: 3px 10px; margin-bottom: 14px;
+  }
+  .featured-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+  .featured-desc { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; font-weight: 400; }
+
+  .concepts-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;
+  }
+  .concept-item {
+    background: var(--surface2); border-radius: 10px; padding: 14px 16px;
+    border: 1px solid var(--border);
+  }
+  .concept-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--accent); }
+  .concept-desc { font-size: 11px; color: var(--muted); line-height: 1.4; font-weight: 400; }
+
+  /* STACK */
+  .stack-list { display: flex; flex-direction: column; gap: 10px; }
+  .stack-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px; transition: border-color 0.2s;
+  }
+  .stack-item:hover { border-color: var(--border-hover); }
+  .stack-icon { font-size: 20px; flex-shrink: 0; }
+  .stack-info strong { font-size: 13px; font-weight: 600; display: block; margin-bottom: 2px; }
+  .stack-info span { font-size: 12px; color: var(--muted); font-weight: 400; }
+
+  /* ROADMAP */
+  .roadmap-list { display: flex; flex-direction: column; gap: 0; }
+  .roadmap-item {
+    display: flex; gap: 16px; padding-bottom: 24px; position: relative;
+  }
+  .roadmap-item:not(:last-child)::before {
+    content: ''; position: absolute;
+    left: 15px; top: 32px; bottom: 0;
+    width: 1px; background: var(--border);
+  }
+  .roadmap-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--surface); border: 1px solid rgba(196,181,253,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent);
+    flex-shrink: 0; font-weight: 500;
+  }
+  .roadmap-content { padding-top: 6px; }
+  .roadmap-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .roadmap-desc { font-size: 12px; color: var(--muted); font-weight: 400; }
+
+  footer {
+    text-align: center; padding-top: 40px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="container">
+
+  <nav>
+    <div class="nav-logo"><span>~/</span>enrique / java</div>
+    <a class="nav-back" href="https://enrique22-22.github.io/Porfolio-EnriqueSoriano/">← Volver al portfolio</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-tag">Módulo de Programación · 1º DAM</div>
+    <h1>Prácticas<br><span>Java</span></h1>
+    <div class="hero-sub">Ejercicios y retos técnicos · Java 17+</div>
+    <p class="hero-desc">
+      Selección de mis mejores ejercicios realizados en el módulo de Programación. Desde lógica de control básica hasta estructuras de datos y orientación a objetos.
+    </p>
+    <div class="hero-chips">
+      <div class="chip">☕ Java 17+</div>
+      <div class="chip">💻 IntelliJ IDEA</div>
+      <div class="chip">🔀 Git</div>
+    </div>
+    <div class="hero-actions">
+      <a href="https://github.com/enrique22-22/Programacion-Programas-Java" target="_blank" class="btn-primary">Ver repositorio ↗</a>
+      <a href="https://enrique22-22.github.io/Porfolio-EnriqueSoriano/" class="btn-secondary">← Portfolio</a>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="section-label">Destacado</div>
+    <div class="section-title">Examen 2ª Evaluación</div>
+    <div class="featured-card">
+      <div class="featured-label">★ Mejor trabajo</div>
+      <div class="featured-title">Reto técnico bajo tiempo limitado</div>
+      <p class="featured-desc">Ejercicio completo del examen de la segunda evaluación, que refleja mis capacidades actuales en Java aplicando buenas prácticas de programación.</p>
+      <div class="concepts-grid">
+        <div class="concept-item">
+          <div class="concept-title">Lógica de control</div>
+          <div class="concept-desc">Uso complejo de bucles y condicionales anidados.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-title">Gestión de datos</div>
+          <div class="concept-desc">Arrays, listas y validación de entradas del usuario.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-title">Eficiencia</div>
+          <div class="concept-desc">Resolución bajo tiempo limitado con buenas prácticas.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="section-label">Stack</div>
+    <div class="section-title">Tecnologías usadas</div>
+    <div class="stack-list">
+      <div class="stack-item">
+        <div class="stack-icon">☕</div>
+        <div class="stack-info">
+          <strong>Java 17+</strong>
+          <span>Programación imperativa y modular</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">💻</div>
+        <div class="stack-info">
+          <strong>IntelliJ IDEA</strong>
+          <span>IDE profesional de desarrollo</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">🔀</div>
+        <div class="stack-info">
+          <strong>Git + GitHub</strong>
+          <span>Control de versiones y almacenamiento del código</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="section-label">Próximamente</div>
+    <div class="section-title">Futuras actualizaciones</div>
+    <div class="roadmap-list">
+      <div class="roadmap-item">
+        <div class="roadmap-num">01</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Prácticas finales del curso</div>
+          <div class="roadmap-desc">Ejercicios completados al terminar el módulo de Programación.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-num">02</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Programación Orientada a Objetos</div>
+          <div class="roadmap-desc">Ejercicios de POO mostrando la evolución del aprendizaje.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-num">03</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Evolución completa del ciclo</div>
+          <div class="roadmap-desc">Reflejo del progreso desde 1º hasta el final del DAM.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Enrique Soriano · 1º DAM · <a href="https://enrique22-22.github.io/Porfolio-EnriqueSoriano/">Ver portfolio completo</a></p>
+  </footer>
+
+</div>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
